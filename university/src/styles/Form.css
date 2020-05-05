@@ -1,0 +1,30 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid gray;
+    padding: 10px;
+}
+
+input {
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+}
+
+.button-form {
+    width: 50%;
+    margin: 5px;
+}
+
+.single-button {
+    margin: 5px;
+}
