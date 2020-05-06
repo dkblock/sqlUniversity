@@ -51,7 +51,43 @@ export async function insertRow(tableName, state) {
 
   const query = `INSERT INTO ${tableName} (${columns}) VALUES (${condition})`;
   const url = `${baseUrl}?query=${query}`;
-  await fetch(url);
+  const response = await fetch(url);
+  const responseResult = await response.json();
+
+  return responseResult;
+}
+
+export async function updateRow(tableName, state, updatedRow) {
+  if (tableName === "Кабинеты") return updateRowByProcedure(state, updatedRow);
+
+  let columns = "";
+  let condition = "";
+  Object.keys(state).map((key) => (columns += `${key}='${state[key]}',`));
+  Object.keys(updatedRow).map(
+    (key) =>
+      (condition += !updatedRow[key]
+        ? `(${key} IS NULL OR ${key}='') AND `
+        : `${key}='${updatedRow[key]}' AND `)
+  );
+  columns = columns.slice(0, -1);
+  condition = condition.slice(0, -4);
+
+  const query = `UPDATE ${tableName} SET ${columns} WHERE ${condition}`;
+  const url = `${baseUrl}?query=${query}`;
+  const response = await fetch(url);
+  const responseResult = await response.json();
+
+  return responseResult;
+}
+
+export async function updateRowByProcedure(state, updatedRow) {
+  const condition = `${updatedRow.Id_Кабинета}, ${state.Id_Кабинета}, ${state.Id_Кафедры},  ${state.Номер}, '${state.Тип}',  ${state.Количество_мест}`;
+  const query = `EXEC EditCabinet ${condition}`;
+  const url = `${baseUrl}?query=${query}`;
+  const response = await fetch(url);
+  const responseResult = await response.json();
+
+  return responseResult;
 }
 
 export async function deleteRow(tableName, row) {
@@ -61,5 +97,8 @@ export async function deleteRow(tableName, row) {
 
   const query = `DELETE FROM ${tableName} WHERE ${condition}`;
   const url = `${baseUrl}?query=${query}`;
-  await fetch(url);
+  const response = await fetch(url);
+  const responseResult = await response.json();
+
+  return responseResult;
 }

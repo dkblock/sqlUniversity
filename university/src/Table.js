@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./styles/Table.css";
-import { getRows, getPermissions, deleteRow } from "./universityService";
+import { getPermissions } from "./universityService";
 
-export default function Table({ tableName, rows, searchParams, onDelete }) {
+export default function Table({ tableName, rows, searchParams, onDelete, onUpdate }) {
   const [permissions, setPermissions] = useState([]);
 
   useEffect(() => {
@@ -14,12 +14,20 @@ export default function Table({ tableName, rows, searchParams, onDelete }) {
     fetchData();
   }, [searchParams]);
 
+  const hasUpdatePermission = () => {
+    return permissions.some((p) => p.permission_name === "UPDATE");
+  };
+
   const hasDeletePermission = () => {
     return permissions.some((p) => p.permission_name === "DELETE");
   };
 
-  const handleDelete = (row) => (event) => {      
-      onDelete(row);
+  const handleDelete = (row) => (event) => {
+    onDelete(row);
+  };
+
+  const handleUpdate = (row) => (event) => {
+    onUpdate(row);
   }
 
   return (
@@ -38,8 +46,14 @@ export default function Table({ tableName, rows, searchParams, onDelete }) {
                 <td>{row[key]}</td>
               ))}
               <td className="button-group-col">
-                <button className="button-table">Изменить</button>
-                {hasDeletePermission() && <button className="button-table" onClick={handleDelete(row)}>Удалить</button>}
+                {hasUpdatePermission() && (
+                  <button className="button-table" onClick={handleUpdate(row)}>Изменить</button>
+                )}
+                {hasDeletePermission() && (
+                  <button className="button-table" onClick={handleDelete(row)}>
+                    Удалить
+                  </button>
+                )}
               </td>
             </tr>
           ))}
